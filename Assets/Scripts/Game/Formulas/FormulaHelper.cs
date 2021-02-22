@@ -2141,6 +2141,10 @@ namespace DaggerfallWorkshop.Game.Formulas
         /// <param name="minimumCastingCost">Spell point always costs minimum (e.g. from vampirism). Do not set true for reflection/absorption cost calculations.</param>
         public static SpellCost CalculateTotalEffectCosts(EffectEntry[] effectEntries, TargetTypes targetType, DaggerfallEntity casterEntity = null, bool minimumCastingCost = false)
         {
+            Func<EffectEntry[], TargetTypes, DaggerfallEntity, bool, SpellCost> del;
+            if (TryGetOverride("CalculateTotalEffectCosts", out del))
+                return del(effectEntries, targetType, casterEntity, minimumCastingCost);
+
             const int castCostFloor = 5;
 
             SpellCost totalCost;
@@ -2195,6 +2199,10 @@ namespace DaggerfallWorkshop.Game.Formulas
         /// </summary>
         public static SpellCost CalculateEffectCosts(IEntityEffect effect, EffectSettings settings, DaggerfallEntity casterEntity = null)
         {
+            Func<IEntityEffect, EffectSettings, DaggerfallEntity, SpellCost> del;
+            if(TryGetOverride("CalculateEffectCosts", out del))
+                return del(effect, settings, casterEntity);
+
             bool activeComponents = false;            
 
             // Get related skill
@@ -2275,6 +2283,10 @@ namespace DaggerfallWorkshop.Game.Formulas
 
         public static int ApplyTargetCostMultiplier(int cost, TargetTypes targetType)
         {
+            Func<int, TargetTypes, int> del;
+            if (TryGetOverride("ApplyTargetCostMultiplier", out del))
+                return del(cost, targetType);
+
             switch (targetType)
             {
                 default:
