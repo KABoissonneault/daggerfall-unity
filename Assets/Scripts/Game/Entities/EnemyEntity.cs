@@ -449,20 +449,34 @@ namespace DaggerfallWorkshop.Game.Entity
             }
         }
 
-        public void SetEnemySpells(byte[] spellList)
+        public void SetEnemySpells(byte[] spellList, bool setMagicStats = true)
         {
-            // Enemies don't follow same rule as player for maximum spell points
-            MaxMagicka = 10 * level + 100;
-            currentMagicka = MaxMagicka;
-            skills.SetPermanentSkillValue(DFCareer.Skills.Destruction, 80);
-            skills.SetPermanentSkillValue(DFCareer.Skills.Restoration, 80);
-            skills.SetPermanentSkillValue(DFCareer.Skills.Illusion, 80);
-            skills.SetPermanentSkillValue(DFCareer.Skills.Alteration, 80);
-            skills.SetPermanentSkillValue(DFCareer.Skills.Thaumaturgy, 80);
-            skills.SetPermanentSkillValue(DFCareer.Skills.Mysticism, 80);
+            int[] intSpellList = System.Array.ConvertAll(spellList, spell => (int)spell);
+            SetEnemySpells(intSpellList, setMagicStats);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spellList">Spell ids to assign to spellbook</param>
+        /// <param name="setMagicStats"></param>
+        public void SetEnemySpells(int[] spellList, bool setMagicStats=true)
+        {
+            if (setMagicStats)
+            {
+                // Enemies don't follow same rule as player for maximum spell points
+                MaxMagicka = 10 * level + 100;
+                currentMagicka = MaxMagicka;
+                skills.SetPermanentSkillValue(DFCareer.Skills.Destruction, 80);
+                skills.SetPermanentSkillValue(DFCareer.Skills.Restoration, 80);
+                skills.SetPermanentSkillValue(DFCareer.Skills.Illusion, 80);
+                skills.SetPermanentSkillValue(DFCareer.Skills.Alteration, 80);
+                skills.SetPermanentSkillValue(DFCareer.Skills.Thaumaturgy, 80);
+                skills.SetPermanentSkillValue(DFCareer.Skills.Mysticism, 80);
+            }
 
             // Add spells to enemy from standard list
-            foreach (byte spellID in spellList)
+            foreach (int spellID in spellList)
             {
                 SpellRecord.SpellRecordData spellData;
                 GameManager.Instance.EntityEffectBroker.GetClassicSpellRecord(spellID, out spellData);
