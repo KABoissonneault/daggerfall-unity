@@ -454,8 +454,8 @@ namespace Wenzil.Console
         {
             public static readonly string name = "cm";
             public static readonly string error = "Failed to create mobile";
-            public static readonly string usage = "cm [n] [team]";
-            public static readonly string description = "Creates a mobile of type [n] on [team]. Omit team argument for default team.";
+            public static readonly string usage = "cm [n][m/f] [team]";
+            public static readonly string description = "Creates a mobile of type [n] on [team]. Add m/f to id (ex: 128m) to specify gender. Omit team argument for default team.";
 
             public static string Execute(params string[] args)
             {
@@ -464,6 +464,18 @@ namespace Wenzil.Console
                 GameObject player = GameManager.Instance.PlayerObject;
                 if (player != null)
                 {
+                    MobileGender gender = MobileGender.Unspecified;
+                    if (args[0].EndsWith("m"))
+                    {
+                        gender = MobileGender.Male;
+                        args[0] = args[0].TrimEnd('m');
+                    }
+                    else if (args[0].EndsWith("f"))
+                    {
+                        gender = MobileGender.Female;
+                        args[0] = args[0].TrimEnd('f');
+                    }
+
                     int id = 0;
                     if (!int.TryParse(args[0], out id))
                         return "Invalid mobile ID.";
@@ -481,7 +493,7 @@ namespace Wenzil.Console
                             return "Invalid team.";
                     }
 
-                    GameObject[] mobile = GameObjectHelper.CreateFoeGameObjects(player.transform.position + player.transform.forward * 2, (MobileTypes)id, 1);
+                    GameObject[] mobile = GameObjectHelper.CreateFoeGameObjects(player.transform.position + player.transform.forward * 2, (MobileTypes)id, 1, gender: gender);
 
                     DaggerfallEntityBehaviour behaviour = mobile[0].GetComponent<DaggerfallEntityBehaviour>();
                     EnemyEntity entity = behaviour.Entity as EnemyEntity;

@@ -1240,7 +1240,7 @@ namespace DaggerfallWorkshop.Utility
         /// </summary>
         /// <param name="reaction">Foe is hostile by default but can optionally set to passive.</param>
         /// <returns>GameObject[] array of 1-N foes. Array can be null or empty if create fails.</returns>
-        public static GameObject[] CreateFoeGameObjects(Vector3 position, MobileTypes foeType, int spawnCount = 1, MobileReactions reaction = MobileReactions.Hostile, Foe foeResource = null, bool alliedToPlayer = false)
+        public static GameObject[] CreateFoeGameObjects(Vector3 position, MobileTypes foeType, int spawnCount = 1, MobileReactions reaction = MobileReactions.Hostile, Foe foeResource = null, bool alliedToPlayer = false, MobileGender gender = MobileGender.Unspecified)
         {
             List<GameObject> gameObjects = new List<GameObject>();
 
@@ -1257,11 +1257,13 @@ namespace DaggerfallWorkshop.Utility
                 if (setupEnemy != null)
                 {
                     // Assign gender randomly
-                    MobileGender gender;
-                    if (UnityEngine.Random.Range(0f, 1f) < 0.55f)
-                        gender = MobileGender.Male;
-                    else
-                        gender = MobileGender.Female;
+                    if (gender == MobileGender.Unspecified)
+                    {
+                        if (UnityEngine.Random.Range(0f, 1f) < 0.55f)
+                            gender = MobileGender.Male;
+                        else
+                            gender = MobileGender.Female;
+                    }
 
                     // Configure enemy
                     setupEnemy.ApplyEnemySettings(foeType, reaction, gender, alliedToPlayer: alliedToPlayer);
